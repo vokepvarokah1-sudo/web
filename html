@@ -21,7 +21,6 @@
       padding: 10px;
     }
 
-    /* HEADER */
     header {
       display: flex;
       justify-content: flex-end;
@@ -37,7 +36,6 @@
       border-radius: 4px;
     }
 
-    /* OPEN SLOT IKLAN */
     .ad-slot {
       width: 100%;
       border: 2px dashed #444;
@@ -48,7 +46,6 @@
       font-size: 14px;
     }
 
-    /* PLAYER CONTAINER */
     .player-wrapper {
       position: relative;
       width: 100%;
@@ -57,16 +54,15 @@
       overflow: hidden;
     }
 
-    /* Responsive ratio */
     .player-wrapper::before {
       content: "";
       display: block;
-      padding-top: 56.25%; /* 16:9 default */
+      padding-top: 56.25%;
     }
 
     @media (max-width: 768px) {
       .player-wrapper::before {
-        padding-top: 177.77%; /* 9:16 for mobile */
+        padding-top: 177.77%;
       }
     }
 
@@ -86,12 +82,11 @@
 
     .player-fallback {
       color: #fff;
-      font-size: 16px;
+      font-size: 15px;
       line-height: 1.6;
       opacity: 0.9;
     }
 
-    /* IKLAN BAWAH PLAYER */
     .ad-banner {
       width: 100%;
       height: 60px;
@@ -104,7 +99,6 @@
       font-size: 14px;
     }
 
-    /* CONTROLS */
     .controls {
       display: flex;
       gap: 10px;
@@ -129,22 +123,18 @@
       background: #00b36b;
       color: #fff;
     }
-
   </style>
 </head>
 
 <body>
 
-  <!-- HEADER -->
   <header>
     <a href="mailto:youremail@example.com">Pasang Iklan</a>
   </header>
 
-  <!-- OPEN SLOT IKLAN ATAS -->
   <div class="ad-slot">OPEN SLOT IKLAN (728x90)</div>
   <div class="ad-slot">OPEN SLOT IKLAN (728x90)</div>
 
-  <!-- PLAYER -->
   <div class="player-wrapper">
     <div class="player-container" id="player">
       <div class="player-fallback">
@@ -154,24 +144,73 @@
     </div>
   </div>
 
-  <!-- IKLAN BAWAH PLAYER -->
   <div class="ad-banner">IKLAN</div>
   <div class="ad-banner">IKLAN</div>
 
-  <!-- CONTROLS -->
   <div class="controls">
     <button class="btn-next" id="nextBtn">Next Video</button>
     <button class="btn-download" id="downloadBtn">Download</button>
   </div>
 
-  <!-- SCRIPT (kosong dulu, logika menyusul) -->
   <script>
-    /*
-      Di tahap ini:
-      - player masih placeholder
-      - tombol belum aktif
-      - fetch gist & cache akan ditambahkan selanjutnya
-    */
+    const GIST_URL = "https://gist.githubusercontent.com/vokepvarokah1-sudo/e19d30781bf904e4419135f16a35092e/raw/c50ab1e32f20e0e1ceca3f3451aab4d026acf0c3";
+    const STORAGE_KEY = "played_videos";
+
+    let currentVideo = null;
+
+    async function fetchVideos() {
+      const res = await fetch(GIST_URL);
+      return await res.json();
+    }
+
+    function getPlayedVideos() {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    }
+
+    function savePlayedVideo(id) {
+      const played = getPlayedVideos();
+      played.push(id);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(played));
+    }
+
+    function pickRandomVideo(videos) {
+      let played = getPlayedVideos();
+      let available = videos.filter(v => !played.includes(v.id));
+
+      if (available.length === 0) {
+        localStorage.removeItem(STORAGE_KEY);
+        available = videos;
+      }
+
+      return available[Math.floor(Math.random() * available.length)];
+    }
+
+    function renderVideo(video) {
+      currentVideo = video;
+
+      const player = document.getElementById("player");
+      player.innerHTML = `
+        <div class="player-fallback">
+          Video siap diputar<br/>
+          <small>${video.play}</small>
+        </div>
+      `;
+
+      document.getElementById("downloadBtn").onclick = () => {
+        window.location.href = video.download;
+      };
+    }
+
+    async function loadVideo() {
+      const videos = await fetchVideos();
+      const video = pickRandomVideo(videos);
+      savePlayedVideo(video.id);
+      renderVideo(video);
+    }
+
+    document.getElementById("nextBtn").addEventListener("click", loadVideo);
+
+    loadVideo();
   </script>
 
 </body>
