@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Random Video</title>
 
   <style>
@@ -21,6 +21,7 @@
       padding: 10px;
     }
 
+    /* HEADER */
     header {
       display: flex;
       justify-content: flex-end;
@@ -36,57 +37,64 @@
       border-radius: 4px;
     }
 
-    .ad-slot {
+    /* OPEN SLOT IKLAN */
+    .slot-box {
       width: 100%;
-      border: 2px dashed #444;
-      color: #aaa;
+      border: 2px dashed #ff3b3b;
+      color: #ffffff;
+      background: #1a1a1a;
       text-align: center;
       padding: 18px;
       margin: 8px 0;
       font-size: 14px;
     }
 
+    /* PLAYER WRAPPER */
     .player-wrapper {
       position: relative;
       width: 100%;
       background: #000;
-      margin: 10px 0;
+      margin: 12px 0;
       overflow: hidden;
     }
 
+    /* ASPECT RATIO */
     .player-wrapper::before {
       content: "";
       display: block;
-      padding-top: 56.25%;
+      padding-top: 56.25%; /* 16:9 */
     }
 
     @media (max-width: 768px) {
       .player-wrapper::before {
-        padding-top: 177.77%;
+        padding-top: 177.77%; /* 9:16 */
       }
     }
 
-    .player-container {
+    /* PESAN ADBLOCK (AMAN) */
+    .player-message {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       padding: 20px;
       background: #000;
-    }
-
-    .player-fallback {
       color: #fff;
-      font-size: 15px;
+      font-size: 16px;
       line-height: 1.6;
-      opacity: 0.9;
+      z-index: 1;
     }
 
+    /* LAYER PLAYER + IKLAN (BISA DIBLOKIR) */
+    .player-adlayer {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+    }
+
+    /* IKLAN BAWAH */
     .ad-banner {
       width: 100%;
       height: 60px;
@@ -99,6 +107,7 @@
       font-size: 14px;
     }
 
+    /* CONTROLS */
     .controls {
       display: flex;
       gap: 10px;
@@ -128,41 +137,44 @@
 
 <body>
 
+  <!-- HEADER -->
   <header>
     <a href="mailto:youremail@example.com">Pasang Iklan</a>
   </header>
 
-  <div class="ad-slot">OPEN SLOT IKLAN (728x90)</div>
-  <div class="ad-slot">OPEN SLOT IKLAN (728x90)</div>
+  <!-- OPEN SLOT IKLAN ATAS -->
+  <div class="slot-box">OPEN SLOT IKLAN (728x90)</div>
+  <div class="slot-box">OPEN SLOT IKLAN (728x90)</div>
 
+  <!-- PLAYER -->
   <div class="player-wrapper">
 
-  <!-- PESAN AMAN (TIDAK BLOKIR ADBLOCK) -->
-  <div class="player-message">
-    Matikan adsblock untuk menonton<br/>
-    <small>Turn off adsblock to watch</small>
+    <!-- PESAN ADBLOCK (SELALU ADA) -->
+    <div class="player-message">
+      Matikan adsblock untuk menonton<br>
+      <small>Turn off adsblock to watch</small>
+    </div>
+
+    <!-- PLAYER + IKLAN -->
+    <div class="player-adlayer" id="player">
+      <!-- Player Engine / Embed akan masuk di sini -->
+    </div>
+
   </div>
 
-  <!-- LAYER IKLAN + PLAYER (BOLEH HILANG) -->
-  <div class="player-adlayer" id="player">
-    <!-- player / embed akan masuk di sini -->
-  </div>
-
-</div>
-
-
+  <!-- IKLAN BAWAH PLAYER -->
   <div class="ad-banner">IKLAN</div>
   <div class="ad-banner">IKLAN</div>
 
+  <!-- CONTROLS -->
   <div class="controls">
     <button class="btn-next" id="nextBtn">Next Video</button>
     <button class="btn-download" id="downloadBtn">Download</button>
   </div>
 
   <script>
-    const GIST_URL = "https://gist.githubusercontent.com/vokepvarokah1-sudo/e19d30781bf904e4419135f16a35092e/raw/c50ab1e32f20e0e1ceca3f3451aab4d026acf0c3";
+    const GIST_URL = "https://raw.githubusercontent.com/USERNAME/GIST_ID/raw/videos.json";
     const STORAGE_KEY = "played_videos";
-
     let currentVideo = null;
 
     async function fetchVideos() {
@@ -197,10 +209,13 @@
 
       const player = document.getElementById("player");
       player.innerHTML = `
-        <div class="player-fallback">
-          Video siap diputar<br/>
-          <small>${video.play}</small>
-        </div>
+        <video
+          src="${video.play}"
+          controls
+          autoplay
+          playsinline
+          style="width:100%; height:100%; background:#000;">
+        </video>
       `;
 
       document.getElementById("downloadBtn").onclick = () => {
@@ -209,14 +224,17 @@
     }
 
     async function loadVideo() {
-      const videos = await fetchVideos();
-      const video = pickRandomVideo(videos);
-      savePlayedVideo(video.id);
-      renderVideo(video);
+      try {
+        const videos = await fetchVideos();
+        const video = pickRandomVideo(videos);
+        savePlayedVideo(video.id);
+        renderVideo(video);
+      } catch (e) {
+        console.error("Gagal load video", e);
+      }
     }
 
     document.getElementById("nextBtn").addEventListener("click", loadVideo);
-
     loadVideo();
   </script>
 
