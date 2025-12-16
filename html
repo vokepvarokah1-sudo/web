@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Random Video</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: #0e0e0e;
+      color: #ffffff;
+      max-width: 900px;
+      margin: auto;
+      padding: 10px;
+    }
+
+    /* HEADER */
+    header {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+    }
+
+    header a {
+      background: #ff3b3b;
+      color: #fff;
+      padding: 8px 14px;
+      text-decoration: none;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+
+    /* OPEN SLOT IKLAN */
+    .ad-slot {
+      width: 100%;
+      border: 2px dashed #444;
+      color: #aaa;
+      text-align: center;
+      padding: 18px;
+      margin: 8px 0;
+      font-size: 14px;
+    }
+
+    /* PLAYER CONTAINER */
+    .player-wrapper {
+      position: relative;
+      width: 100%;
+      background: #000;
+      margin: 10px 0;
+      overflow: hidden;
+    }
+
+    /* Responsive ratio */
+    .player-wrapper::before {
+      content: "";
+      display: block;
+      padding-top: 56.25%; /* 16:9 default */
+    }
+
+    @media (max-width: 768px) {
+      .player-wrapper::before {
+        padding-top: 177.77%; /* 9:16 for mobile */
+      }
+    }
+
+    .player-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      background: #000;
+    }
+
+    .player-fallback {
+      color: #fff;
+      font-size: 16px;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    /* IKLAN BAWAH PLAYER */
+    .ad-banner {
+      width: 100%;
+      height: 60px;
+      background: #1a1a1a;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+      font-size: 14px;
+    }
+
+    /* CONTROLS */
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .controls button {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .btn-next {
+      background: #2d8cff;
+      color: #fff;
+    }
+
+    .btn-download {
+      background: #00b36b;
+      color: #fff;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <a href="mailto:youremail@example.com">Pasang Iklan</a>
+  </header>
+
+  <!-- OPEN SLOT IKLAN ATAS -->
+  <div class="ad-slot">OPEN SLOT IKLAN (728x90)</div>
+  <div class="ad-slot">OPEN SLOT IKLAN (728x90)</div>
+
+  <!-- PLAYER -->
+  <div class="player-wrapper">
+    <div class="player-container" id="player">
+      <div class="player-fallback">
+        Matikan adsblock untuk menonton<br/>
+        <small>Turn off adsblock to watch</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- IKLAN BAWAH PLAYER -->
+  <div class="ad-banner">IKLAN</div>
+  <div class="ad-banner">IKLAN</div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <button class="btn-next" id="nextBtn">Next Video</button>
+    <button class="btn-download" id="downloadBtn">Download</button>
+  </div>
+
+  <!-- SCRIPT (kosong dulu, logika menyusul) -->
+  <script>
+    /*
+      Di tahap ini:
+      - player masih placeholder
+      - tombol belum aktif
+      - fetch gist & cache akan ditambahkan selanjutnya
+    */
+  </script>
+
+</body>
+</html>
