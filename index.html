@@ -98,6 +98,7 @@ header {
 .video-container {
   position: relative;
   width: 100%;
+  min-height: 600px;
   background: #000;
   border-radius: 16px;
   overflow: hidden;
@@ -243,6 +244,10 @@ header {
 
 /* Responsive */
 @media (max-width: 768px) {
+  .video-container {
+    min-height: 400px;
+  }
+  
   .player-frame {
     height: 400px;
   }
@@ -353,7 +358,7 @@ header {
 // CONFIGURATION - GANTI DENGAN URL ANDA
 // ============================================
 const CONFIG = {
-  GIST_URL: 'https://gist.githubusercontent.com/vokepvarokah1-sudo/e19d30781bf904e4419135f16a35092e/raw/c50ab1e32f20e0e1ceca3f3451aab4d026acf0c3/',
+  GIST_URL: 'https://gist.githubusercontent.com/USERNAME/GIST_ID/raw/videos.json',
   CACHE_KEY: 'played_videos',
   CACHE_EXPIRY: 7 * 24 * 60 * 60 * 1000 // 7 days
 };
