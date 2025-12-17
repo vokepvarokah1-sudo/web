@@ -3,155 +3,567 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Random Video</title>
-
+<title>Random Video - Watch Now</title>
 <style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-  background:#000;
-  color:#fff;
-  max-width:900px;
-  margin:auto;
-  padding:10px;
-  font-family:Arial,Helvetica,sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+  color: #fff;
+  min-height: 100vh;
+  padding: 20px;
 }
 
-.player-wrapper {
-  position:relative;
-  width:100%;
-  background:#000;
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.player-wrapper::before {
-  content:"";
-  display:block;
-  padding-top:56.25%;
-}
-@media(max-width:768px){
-  .player-wrapper::before{padding-top:177.77%;}
-}
-
-#message {
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  background:#000;
-  z-index:1;
-  font-size:16px;
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  margin-bottom: 30px;
+  border-bottom: 2px solid rgba(168, 85, 247, 0.3);
 }
 
-#player {
-  position:absolute;
-  inset:0;
-  z-index:2;
-  display:none;
+.logo {
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00d9ff 0%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
+.advertise-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.advertise-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(16, 185, 129, 0.5);
+}
+
+/* Ad Banner */
+.ad-banner {
+  background: rgba(30, 30, 60, 0.6);
+  border: 2px solid rgba(168, 85, 247, 0.2);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.ad-banner::before {
+  content: "📢 Advertisement";
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  font-size: 11px;
+  color: #a5b4fc;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.ad-placeholder {
+  color: #64748b;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Video Section */
+.video-section {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  background: #000;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* Adblock Message - Always Visible Layer */
+.adblock-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a0a2e 0%, #16213e 100%);
+  z-index: 1;
+  border-radius: 16px;
+  text-align: center;
+  padding: 40px;
+}
+
+.adblock-message h2 {
+  font-size: 32px;
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.adblock-message p {
+  font-size: 18px;
+  color: #cbd5e1;
+  margin-bottom: 10px;
+}
+
+.adblock-message .icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+/* Player Frame - On Top When Ads Visible */
+.player-frame {
+  width: 100%;
+  height: 600px;
+  border: none;
+  display: block;
+  position: relative;
+  z-index: 2;
+  background: #000;
+}
+
+/* Ad Bait for Detection */
+.ad-bait {
+  width: 1px;
+  height: 1px;
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+}
+
+/* Control Buttons */
 .controls {
-  display:flex;
-  gap:10px;
-  margin-top:15px;
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
 }
-button {
-  flex:1;
-  padding:12px;
-  font-size:16px;
-  border:none;
-  cursor:pointer;
+
+.btn {
+  flex: 1;
+  padding: 18px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-next {
+  background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4);
+}
+
+.btn-next:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 30px rgba(168, 85, 247, 0.6);
+}
+
+.btn-download {
+  background: linear-gradient(135deg, #00d9ff 0%, #0095d9 100%);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(0, 217, 255, 0.4);
+}
+
+.btn-download:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 30px rgba(0, 217, 255, 0.6);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Loading State */
+.loading {
+  display: none;
+  text-align: center;
+  padding: 40px;
+  color: #cbd5e1;
+}
+
+.loading.active {
+  display: block;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(168, 85, 247, 0.2);
+  border-top-color: #a855f7;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .player-frame {
+    height: 400px;
+  }
+  
+  .controls {
+    flex-direction: column;
+  }
+  
+  header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+}
+
+/* Hidden class */
+.hidden {
+  display: none !important;
 }
 </style>
 </head>
-
 <body>
 
-<div class="player-wrapper">
-  <div id="message">
-    Matikan adsblock untuk menonton<br>
-    <small>Turn off adsblock to watch</small>
-  </div>
-  <div id="player"></div>
-</div>
+<div class="container">
+  <!-- Header -->
+  <header>
+    <div class="logo">🎬 Random Video</div>
+    <a href="mailto:business@example.com?subject=Iklan%20di%20Website" class="advertise-btn">
+      📢 Pasang Iklan
+    </a>
+  </header>
 
-<div class="controls">
-  <button id="nextBtn">Next</button>
-  <button id="downloadBtn">Download</button>
+  <!-- Top Ad Banners -->
+  <div class="ad-banner">
+    <div class="ad-placeholder">
+      [Placeholder: Adstera Banner 728x90]<br>
+      Script iklan akan diletakkan di sini
+    </div>
+  </div>
+
+  <div class="ad-banner">
+    <div class="ad-placeholder">
+      [Placeholder: Adstera Banner 728x90]<br>
+      Script iklan akan diletakkan di sini
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading active" id="loading">
+    <div class="spinner"></div>
+    <p>Memuat video random...</p>
+  </div>
+
+  <!-- Video Section -->
+  <div class="video-section hidden" id="videoSection">
+    <div class="video-container">
+      <!-- Adblock Message - Always Behind -->
+      <div class="adblock-message">
+        <div class="icon">🚫</div>
+        <h2>Matikan AdBlock</h2>
+        <p>Untuk melanjutkan menonton</p>
+        <p style="font-size: 14px; color: #94a3b8; margin-top: 10px;">
+          Disable your ad blocker to watch the video
+        </p>
+      </div>
+
+      <!-- Ad Bait for Detection -->
+      <div class="ad-bait advertisment ad-banner"></div>
+
+      <!-- Player iFrame - On Top Layer -->
+      <iframe 
+        id="playerFrame" 
+        class="player-frame"
+        allow="autoplay; fullscreen; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <!-- Control Buttons -->
+    <div class="controls">
+      <button class="btn btn-next" id="nextBtn">
+        🎲 Next Random Video
+      </button>
+      <button class="btn btn-download" id="downloadBtn">
+        📥 Download
+      </button>
+    </div>
+  </div>
+
+  <!-- Bottom Ad Banners -->
+  <div class="ad-banner hidden" id="bottomAds1">
+    <div class="ad-placeholder">
+      [Placeholder: Adstera Banner 728x90]<br>
+      Script iklan akan diletakkan di sini
+    </div>
+  </div>
+
+  <div class="ad-banner hidden" id="bottomAds2">
+    <div class="ad-placeholder">
+      [Placeholder: Adstera Banner 728x90]<br>
+      Script iklan akan diletakkan di sini
+    </div>
+  </div>
 </div>
 
 <script>
-const GIST_URL = "https://gist.githubusercontent.com/vokepvarokah1-sudo/e19d30781bf904e4419135f16a35092e/raw/c50ab1e32f20e0e1ceca3f3451aab4d026acf0c3";
-const STORAGE_KEY = "played_videos";
-let currentVideo=null;
+// ============================================
+// CONFIGURATION - GANTI DENGAN URL ANDA
+// ============================================
+const CONFIG = {
+  GIST_URL: 'https://gist.githubusercontent.com/vokepvarokah1-sudo/e19d30781bf904e4419135f16a35092e/raw/c50ab1e32f20e0e1ceca3f3451aab4d026acf0c3/',
+  CACHE_KEY: 'played_videos',
+  CACHE_EXPIRY: 7 * 24 * 60 * 60 * 1000 // 7 days
+};
 
-/* ===== DETEKSI BRAVE / ADBLOCK ===== */
-async function isBlocked(){
-  // Brave check
-  if (navigator.brave && await navigator.brave.isBrave()) {
-    return true;
+// ============================================
+// GLOBAL STATE
+// ============================================
+let allVideos = [];
+let currentVideo = null;
+
+// ============================================
+// CACHE MANAGEMENT
+// ============================================
+function getPlayedVideos() {
+  const data = localStorage.getItem(CONFIG.CACHE_KEY);
+  if (!data) return [];
+  
+  try {
+    const parsed = JSON.parse(data);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    return [];
   }
-  // Ads bait check
-  const bait=document.createElement("div");
-  bait.className="adsbox";
-  bait.style.height="1px";
-  document.body.appendChild(bait);
-  const blocked=bait.offsetHeight===0;
-  bait.remove();
-  return blocked;
 }
 
-/* ===== VIDEO LOGIC ===== */
-async function fetchVideos(){
-  const r=await fetch(GIST_URL);
-  return await r.json();
-}
-
-function getPlayed(){
-  return JSON.parse(localStorage.getItem(STORAGE_KEY))||[];
-}
-function savePlayed(id){
-  const p=getPlayed();p.push(id);
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(p));
-}
-
-function pickRandom(videos){
-  let played=getPlayed();
-  let avail=videos.filter(v=>!played.includes(v.id));
-  if(avail.length===0){
-    localStorage.removeItem(STORAGE_KEY);
-    avail=videos;
+function markAsPlayed(videoId) {
+  const played = getPlayedVideos();
+  if (!played.includes(videoId)) {
+    played.push(videoId);
+    localStorage.setItem(CONFIG.CACHE_KEY, JSON.stringify(played));
   }
-  return avail[Math.floor(Math.random()*avail.length)];
 }
 
-function renderVideo(video){
-  currentVideo=video;
-  document.getElementById("player").innerHTML=`
-    <video src="${video.play}" controls autoplay playsinline
-    style="width:100%;height:100%;background:#000"></video>`;
-  document.getElementById("downloadBtn").onclick=()=>{
-    location.href=video.download;
-  };
+function resetCache() {
+  localStorage.removeItem(CONFIG.CACHE_KEY);
+  console.log('Cache reset: All videos available again');
 }
 
-async function init(){
-  const blocked=await isBlocked();
-  if(blocked){
-    document.getElementById("player").style.display="none";
-    document.getElementById("message").style.display="flex";
+// ============================================
+// VIDEO SELECTION
+// ============================================
+function getUnplayedVideos() {
+  const played = getPlayedVideos();
+  const unplayed = allVideos.filter(v => !played.includes(v.id));
+  
+  // If all played, reset cache
+  if (unplayed.length === 0) {
+    resetCache();
+    return allVideos;
+  }
+  
+  return unplayed;
+}
+
+function selectRandomVideo() {
+  const available = getUnplayedVideos();
+  
+  if (available.length === 0) {
+    console.error('No videos available');
+    return null;
+  }
+  
+  const random = Math.floor(Math.random() * available.length);
+  return available[random];
+}
+
+// ============================================
+// ADBLOCK DETECTION
+// ============================================
+function detectAdblock() {
+  const bait = document.querySelector('.ad-bait');
+  if (!bait) return false;
+  
+  // Check if element is hidden by adblock
+  const rect = bait.getBoundingClientRect();
+  const isHidden = rect.height === 0 || 
+                   window.getComputedStyle(bait).display === 'none' ||
+                   window.getComputedStyle(bait).visibility === 'hidden';
+  
+  return isHidden;
+}
+
+function handleAdblockDetection() {
+  const isBlocked = detectAdblock();
+  const playerFrame = document.getElementById('playerFrame');
+  
+  if (isBlocked) {
+    // Adblock detected - hide player
+    playerFrame.style.display = 'none';
+    console.log('AdBlock detected: Player hidden');
+  } else {
+    // No adblock - show player
+    playerFrame.style.display = 'block';
+    console.log('No AdBlock: Player visible');
+  }
+}
+
+// ============================================
+// PLAYER MANAGEMENT
+// ============================================
+function loadVideo(video) {
+  if (!video) {
+    alert('Video tidak ditemukan!');
     return;
   }
-  document.getElementById("message").style.display="none";
-  document.getElementById("player").style.display="block";
-
-  const videos=await fetchVideos();
-  const video=pickRandom(videos);
-  savePlayed(video.id);
-  renderVideo(video);
+  
+  currentVideo = video;
+  
+  // Update player iframe
+  const playerFrame = document.getElementById('playerFrame');
+  playerFrame.src = video.play;
+  
+  // Update download button
+  const downloadBtn = document.getElementById('downloadBtn');
+  downloadBtn.onclick = () => {
+    window.open(video.download, '_blank');
+  };
+  
+  // Mark as played
+  markAsPlayed(video.id);
+  
+  // Check adblock after iframe loads
+  setTimeout(() => {
+    handleAdblockDetection();
+  }, 500);
+  
+  console.log('Loaded video:', video.id);
 }
 
-document.getElementById("nextBtn").onclick=init;
-init();
+function nextVideo() {
+  const video = selectRandomVideo();
+  loadVideo(video);
+}
+
+// ============================================
+// FETCH GIST DATA
+// ============================================
+async function fetchVideos() {
+  const loading = document.getElementById('loading');
+  const videoSection = document.getElementById('videoSection');
+  const bottomAds1 = document.getElementById('bottomAds1');
+  const bottomAds2 = document.getElementById('bottomAds2');
+  
+  try {
+    loading.classList.add('active');
+    
+    const response = await fetch(CONFIG.GIST_URL);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    
+    if (!data.videos || !Array.isArray(data.videos)) {
+      throw new Error('Invalid Gist structure: "videos" array not found');
+    }
+    
+    allVideos = data.videos;
+    
+    if (allVideos.length === 0) {
+      throw new Error('No videos in Gist');
+    }
+    
+    // Load first random video
+    const firstVideo = selectRandomVideo();
+    loadVideo(firstVideo);
+    
+    // Show video section and bottom ads
+    loading.classList.remove('active');
+    videoSection.classList.remove('hidden');
+    bottomAds1.classList.remove('hidden');
+    bottomAds2.classList.remove('hidden');
+    
+    console.log(`Loaded ${allVideos.length} videos from Gist`);
+    
+  } catch (error) {
+    console.error('Failed to fetch videos:', error);
+    loading.innerHTML = `
+      <div class="spinner"></div>
+      <p style="color: #ef4444;">❌ Gagal memuat video</p>
+      <p style="font-size: 14px; color: #94a3b8; margin-top: 10px;">
+        ${error.message}
+      </p>
+      <button onclick="location.reload()" 
+              style="margin-top: 20px; padding: 12px 24px; background: #a855f7; 
+                     color: white; border: none; border-radius: 8px; cursor: pointer;">
+        🔄 Coba Lagi
+      </button>
+    `;
+  }
+}
+
+// ============================================
+// EVENT LISTENERS
+// ============================================
+document.getElementById('nextBtn').addEventListener('click', nextVideo);
+
+// Recheck adblock on window focus (user might disable adblock)
+window.addEventListener('focus', () => {
+  setTimeout(handleAdblockDetection, 300);
+});
+
+// ============================================
+// INITIALIZATION
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('Initializing Random Video Website...');
+  fetchVideos();
+});
 </script>
 
 </body>
