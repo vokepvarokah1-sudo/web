@@ -98,7 +98,7 @@ header {
 .video-container {
   position: relative;
   width: 100%;
-  min-height: 600px;
+  min-height: 450px;
   background: #000;
   border-radius: 16px;
   overflow: hidden;
@@ -151,7 +151,7 @@ header {
 /* Player Frame - On Top When Ads Visible */
 .player-frame {
   width: 100%;
-  height: 600px;
+  height: 450px;
   border: none;
   display: block;
   position: relative;
@@ -173,6 +173,7 @@ header {
   display: flex;
   gap: 15px;
   margin-top: 20px;
+  margin-bottom: 0;
 }
 
 .btn {
@@ -245,11 +246,11 @@ header {
 /* Responsive */
 @media (max-width: 768px) {
   .video-container {
-    min-height: 400px;
+    min-height: 300px;
   }
   
   .player-frame {
-    height: 400px;
+    height: 300px;
   }
   
   .controls {
@@ -260,6 +261,16 @@ header {
     flex-direction: column;
     gap: 15px;
     text-align: center;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1200px) {
+  .video-container {
+    min-height: 400px;
+  }
+  
+  .player-frame {
+    height: 400px;
   }
 }
 
@@ -325,16 +336,6 @@ header {
         allowfullscreen>
       </iframe>
     </div>
-
-    <!-- Control Buttons -->
-    <div class="controls">
-      <button class="btn btn-next" id="nextBtn">
-        🎲 Next Random Video
-      </button>
-      <button class="btn btn-download" id="downloadBtn">
-        📥 Download
-      </button>
-    </div>
   </div>
 
   <!-- Bottom Ad Banners -->
@@ -351,6 +352,16 @@ header {
       Script iklan akan diletakkan di sini
     </div>
   </div>
+
+  <!-- Control Buttons - Moved Below Ads -->
+  <div class="controls hidden" id="controls">
+    <button class="btn btn-next" id="nextBtn">
+      🎲 Next Random Video
+    </button>
+    <button class="btn btn-download" id="downloadBtn">
+      📥 Download
+    </button>
+  </div>
 </div>
 
 <script>
@@ -358,7 +369,7 @@ header {
 // CONFIGURATION - GANTI DENGAN URL ANDA
 // ============================================
 const CONFIG = {
-  GIST_URL: 'https://gist.githubusercontent.com/vokepvarokah1-sudo/e19d30781bf904e4419135f16a35092e/raw/c50ab1e32f20e0e1ceca3f3451aab4d026acf0c3',
+  GIST_URL: 'https://gist.githubusercontent.com/USERNAME/GIST_ID/raw/videos.json',
   CACHE_KEY: 'played_videos',
   CACHE_EXPIRY: 7 * 24 * 60 * 60 * 1000 // 7 days
 };
@@ -532,6 +543,7 @@ async function fetchVideos() {
     videoSection.classList.remove('hidden');
     bottomAds1.classList.remove('hidden');
     bottomAds2.classList.remove('hidden');
+    document.getElementById('controls').classList.remove('hidden');
     
     console.log(`Loaded ${allVideos.length} videos from Gist`);
     
